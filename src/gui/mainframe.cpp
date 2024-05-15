@@ -496,7 +496,7 @@ namespace {
         ImGui::PopItemWidth();
         if (!data.last_error.last_error.empty() && data.last_error.show_until >= std::chrono::high_resolution_clock::now())
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", data.last_error.last_error.c_str());
-        if (ImGui::BeginTable("#file_list", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti)) {
+        if (ImGui::BeginTable("#file_list", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti | ImGuiTableFlags_ScrollY)) {
             ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_PreferSortAscending, 0.0f, sortable_columns::Name);
             ImGui::TableSetupColumn("Ext", ImGuiTableColumnFlags_WidthFixed, 40.0f, sortable_columns::Ext);
             ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 80.0f, sortable_columns::Size);
