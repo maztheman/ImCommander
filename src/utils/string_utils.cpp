@@ -73,15 +73,15 @@ constexpr std::basic_string<CharT, DstTraits>
     std::string size_to_string(size_t sz)
     {
         if (sz < (1024ULL << 1)) {
-            return std::format("{} B", sz);
+            return fmt::format("{} B", sz);
         } else if (sz < (1024ULL << 10)) {
-            return std::format("{:.1f} KiB", sz / static_cast<float>(1ULL << 10));
+            return fmt::format("{:.1f} KiB", sz / static_cast<float>(1ULL << 10));
         } else if (sz < (1024ULL << 20)) {
-            return std::format("{:.1f} MiB", sz / static_cast<float>(1ULL << 20));
+            return fmt::format("{:.1f} MiB", sz / static_cast<float>(1ULL << 20));
         } else if (sz < (1024ULL << 30)) {
-            return std::format("{:.1f} GiB", sz / static_cast<float>(1ULL << 30));
+            return fmt::format("{:.1f} GiB", sz / static_cast<float>(1ULL << 30));
         } else {
-            return std::format("{:.1f} TiB", sz / static_cast<float>(1ULL << 40));
+            return fmt::format("{:.1f} TiB", sz / static_cast<float>(1ULL << 40));
         }
     }
 }
@@ -94,7 +94,7 @@ int imc::string_utils::icompare(const std::string& lhs, const std::string& rhs)
 
 std::string imc::string_utils::size_to_display(size_t sz)
 {
-    return std::format("{:>10}", size_to_string(sz));
+    return fmt::format("{:>10}", size_to_string(sz));
 }
 
 std::string imc::string_utils::size_to_display_no_padding(size_t sz)

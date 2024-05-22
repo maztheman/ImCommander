@@ -1,5 +1,9 @@
 #include "mainframe.h"
 
+#ifndef _IMC_MAC
+#include <date/tz.h>
+#endif
+
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -8,7 +12,7 @@
 #include "types/op_file.h"
 #include "types/errors.h"
 #include <fmt/format.h>
-
+#include <fmt/chrono.h>
 
 #include "viewer.h"
 #include "copy_file.h"
@@ -28,6 +32,7 @@
 #include <set>
 #include <unordered_set>
 #include <unordered_map>
+
 
 namespace fs = std::filesystem;
 
@@ -163,7 +168,7 @@ namespace {
             row_data.is_imaginary = true;
             row_data.is_directory = true;
             row_data.ext = "";
-            row_data.size_display = std::format("{:>10}", "<DIR>");
+            row_data.size_display = fmt::format("{:>10}", "<DIR>");
             row_data.id = std::hash<std::string>{}(row_data.absolute_path);
             return row_data;
         }
@@ -188,7 +193,7 @@ namespace {
                 if (entry.path().has_extension())
                     row_data.name += entry.path().extension();
 
-                row_data.size_display = std::format("{:>10}", "<DIR>");
+                row_data.size_display = fmt::format("{:>10}", "<DIR>");
             } else {
                 row_data.ext = entry.path().extension().generic_string();
                 if (size_t try_size = entry.file_size(ec); !ec) {
@@ -205,7 +210,14 @@ namespace {
                     row_data.modified = try_last_write_time;
                 }
             }
-            row_data.modified_display = std::format("{:%m-%d-%y %I:%M %p}", row_data.modified);
+
+#ifdef _IMC_MAC
+            //for now utc only on macs..
+            row_data.modified_display = fmt::format("{:%m-%d-%y %I:%M %p}", std::chrono::file_clock::to_sys(row_data.modified));
+#else
+            auto t = make_zoned(date::current_zone(), std::chrono::file_clock::to_sys(row_data.modified));
+            row_data.modified_display = date::format("%m-%d-%y %I:%M %p", t);
+#endif
             if (entry.is_symlink()) {
                 row_data.permissions = fs::symlink_status(entry.path()).permissions();
             } else {
@@ -213,13 +225,13 @@ namespace {
             }
             row_data.permissions_display = permissions_to_string(row_data.permissions);
             row_data.absolute_path = entry.path().generic_string();
-            row_data.id = std::hash<std::string>{}(std::format("[{}] {}", id, row_data.absolute_path));
+            row_data.id = std::hash<std::string>{}(fmt::format("[{}] {}", id, row_data.absolute_path));
             return row_data;
         }
 
         static std::string permissions_to_string(fs::perms p)
         {
-            return std::format("{}{}{}{}{}{}{}{}{}",
+            return fmt::format("{}{}{}{}{}{}{}{}{}",
                 ((p & fs::perms::owner_read) != fs::perms::none ? "r" : "-"),
                 ((p & fs::perms::owner_write) != fs::perms::none ? "w" : "-"),
                 ((p & fs::perms::owner_exec) != fs::perms::none ? "x" : "-"),
@@ -416,7 +428,7 @@ namespace {
                 data.im_moving = false;
                 return;
             }
-            hover_text += std::format("=[{}, {}, {}]", dir_dirty, data.dir_dirty, data.im_moving);
+            hover_text += fmt::format("=[{}, {}, {}]", dir_dirty, data.dir_dirty, data.im_moving);
             data.selection.clear();
             data.selection_data.clear();
             dir_dirty = true;
@@ -496,7 +508,7 @@ namespace {
         ImGui::PopItemWidth();
         if (!data.last_error.last_error.empty() && data.last_error.show_until >= std::chrono::high_resolution_clock::now())
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", data.last_error.last_error.c_str());
-        if (ImGui::BeginTable("#file_list", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti)) {
+        if (ImGui::BeginTable("#file_list", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti | ImGuiTableFlags_ScrollY)) {
             ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_PreferSortAscending, 0.0f, sortable_columns::Name);
             ImGui::TableSetupColumn("Ext", ImGuiTableColumnFlags_WidthFixed, 40.0f, sortable_columns::Ext);
             ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 80.0f, sortable_columns::Size);

@@ -2,17 +2,22 @@ cmake_minimum_required(VERSION 3.21)
 
 if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
 set(CMAKE_CXX_EXTENSIONS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+set(IMC_FULL_VERSION "0.0.1")
+
 project(ImCommander
-    VERSION 0.0.1
+    VERSION ${IMC_FULL_VERSION}
     DESCRIPTION "ImGui Total Commander clone"
     LANGUAGES C CXX
 )
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(ImC_PreventInSourcebuilds)
 include(ImC_ProjectOptions)
@@ -76,6 +81,7 @@ endif()
 
 include(ImC_PackageProject)
 
+if(NOT APPLE)
 ImCommander_package_project(
   TARGETS
   imcommander
@@ -84,6 +90,7 @@ ImCommander_package_project(
   # FIXME: this does not work! CK
   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
 )
+endif()
 
 set(CPACK_PACKAGE_FILE_NAME
     "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
