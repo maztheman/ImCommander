@@ -7,9 +7,17 @@ function(ImCommander_setup_dependencies)
 
   # For each dependency, see if it's
   # already been provided to us by a parent project
+  find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
+  execute_process(COMMAND ${Python3_EXECUTABLE} -m venv "${CMAKE_CURRENT_BINARY_DIR}")
+  set(ENV{VIRTUAL_ENV} "${CMAKE_CURRENT_BINARY_DIR}")
+  set(Python3_FIND_VIRTUALENV FIRST)
+  unset(Python3_EXECUTABLE)
+  find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+  execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install ${_pip_args} jinja2)
 
   if(NOT TARGET fmtlib::fmtlib)
-    cpmaddpackage("gh:fmtlib/fmt#9.1.0")
+    cpmaddpackage("gh:fmtlib/fmt#10.2.1")
   endif()
 
   if(NOT TARGET spdlog::spdlog)
@@ -17,7 +25,7 @@ function(ImCommander_setup_dependencies)
       NAME
       spdlog
       VERSION
-      1.11.0
+      1.14.1
       GITHUB_REPOSITORY
       "gabime/spdlog"
       OPTIONS
@@ -42,6 +50,15 @@ function(ImCommander_setup_dependencies)
 
   if (NOT TARGET GLFW::glfw)
     cpmaddpackage("gh:glfw/glfw#3.4")
+  endif()
+
+  if (NOT TARGET date::date)
+    cpmaddpackage(
+      NAME date
+      GITHUB_REPOSITORY "HowardHinnant/date"
+      GIT_TAG master
+      OPTIONS
+      "BUILD_TZ_LIB ON")
   endif()
 
   cpmaddpackage(NAME freetype2
