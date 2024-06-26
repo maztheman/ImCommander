@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(IMC_FULL_VERSION "0.0.1")
+set(IMC_FULL_VERSION "0.0.3")
 
 project(ImCommander
     VERSION ${IMC_FULL_VERSION}
@@ -82,14 +82,14 @@ endif()
 include(ImC_PackageProject)
 
 if(NOT APPLE)
-ImCommander_package_project(
-  TARGETS
-  imcommander
-  ImCommander_options
-  ImCommander_warnings
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
+  ImCommander_package_project(
+    TARGETS
+    imcommander
+    ImCommander_options
+    ImCommander_warnings
+    # FIXME: this does not work! CK
+    # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+  )
 endif()
 
 set(CPACK_PACKAGE_FILE_NAME

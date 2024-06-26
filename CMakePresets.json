@@ -158,7 +158,10 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "ImCommander_ENABLE_HARDENING": "OFF",
+                "ImCommander_ENABLE_CLANG_TIDY": "OFF",
+                "ImCommander_ENABLE_CPPCHECK": "OFF"
             }
         },
         {
