@@ -55,15 +55,21 @@ function(ImCommander_setup_dependencies)
   if (NOT TARGET date::date)
     cpmaddpackage(
       NAME date
-      GITHUB_REPOSITORY "HowardHinnant/date"
+      GITHUB_REPOSITORY "maztheman/date"
       GIT_TAG master
       OPTIONS
-      "BUILD_TZ_LIB ON")
+      "BUILD_TZ_LIB ON"
+      "DO_INSTALL OFF")
   endif()
 
-  cpmaddpackage(NAME freetype2
-                GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-                GIT_TAG master)
+  cpmaddpackage(
+    NAME freetype2
+    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
+    GIT_TAG master
+    OPTIONS
+    "EXCLUDE_FROM_ALL YES"
+    "SKIP_INSTALL_ALL ON"
+  )
 
   CPMAddPackage(
     NAME glad
