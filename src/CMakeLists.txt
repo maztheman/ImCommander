@@ -46,4 +46,6 @@ if (APPLE)
         MACOSX_BUNDLE_ICON_FILE icon.icns
     )
     install(TARGETS imcommander RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX})
+else()
+    install(TARGETS imcommander DESTINATION bin)
 endif()

@@ -82,14 +82,14 @@ endif()
 include(ImC_PackageProject)
 
 if(NOT APPLE)
-ImCommander_package_project(
-  TARGETS
-  imcommander
-  ImCommander_options
-  ImCommander_warnings
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
+  ImCommander_package_project(
+    TARGETS
+    imcommander
+    ImCommander_options
+    ImCommander_warnings
+    # FIXME: this does not work! CK
+    # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+  )
 endif()
 
 set(CPACK_PACKAGE_FILE_NAME
