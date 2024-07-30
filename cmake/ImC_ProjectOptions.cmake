@@ -16,12 +16,12 @@ macro(ImCommander_supports_sanitizers)
 endmacro()
 
 macro(ImCommander_setup_options)
-  option(ImCommander_ENABLE_HARDENING "Enable hardening" ON)
+  option(ImCommander_ENABLE_HARDENING "Enable hardening" OFF)
   option(ImCommander_ENABLE_COVERAGE "Enable coverage reporting" OFF)
   cmake_dependent_option(
     ImCommander_ENABLE_GLOBAL_HARDENING
     "Attempt to push hardening options to built dependencies"
-    ON
+    OFF
     ImCommander_ENABLE_HARDENING
     OFF)
 
@@ -43,7 +43,7 @@ macro(ImCommander_setup_options)
     option(ImCommander_ENABLE_CACHE "Enable ccache" OFF)
   else()
     option(ImCommander_ENABLE_IPO "Enable IPO/LTO" ON)
-    option(ImCommander_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+    option(ImCommander_WARNINGS_AS_ERRORS "Treat Warnings As Errors" OFF)
     option(ImCommander_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
     option(ImCommander_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${SUPPORTS_ASAN})
     option(ImCommander_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
@@ -52,7 +52,7 @@ macro(ImCommander_setup_options)
     option(ImCommander_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
     option(ImCommander_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
     option(ImCommander_ENABLE_CLANG_TIDY "Enable clang-tidy" ON)
-    option(ImCommander_ENABLE_CPPCHECK "Enable cpp-check analysis" ON)
+    option(ImCommander_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
     option(ImCommander_ENABLE_PCH "Enable precompiled headers" OFF)
     option(ImCommander_ENABLE_CACHE "Enable ccache" ON)
   endif()

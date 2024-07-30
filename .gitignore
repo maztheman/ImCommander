@@ -13,3 +13,4 @@ build/
 out/
 .kde4/
 *.kdev4
+.cache/
