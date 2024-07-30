@@ -16,6 +16,7 @@ target_sources(imcommander PRIVATE
     gui/delete_file.cpp
     gui/make_directory.cpp
     backend/file_operations.cpp
+    backend/watch_dir.cpp
     types/errors.cpp
     types/op_file.cpp
 )
