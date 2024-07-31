@@ -347,6 +347,7 @@ namespace {
     void process_change_dir(pane_data_t& data, bool& dir_dirty)
     {
         fs::path changeTo = data.dir.data();
+        const bool is_same_dir = changeTo == data.current_path;
         if (fs::exists(changeTo)) {
             if (0 != data.move_to(changeTo)) {
                 auto undo = data.current_path.generic_string();
@@ -356,8 +357,10 @@ namespace {
                 data.im_moving = false;
                 return;
             }
-            data.selection.clear();
-            data.selection_data.clear();
+            if (!is_same_dir) {
+                data.selection.clear();
+                data.selection_data.clear();
+            }
             dir_dirty = true;
             data.im_moving = false;
             data.dir_dirty = false;
