@@ -431,7 +431,7 @@ namespace {
 #if __cpp_lib_atomic_shared_ptr >= 201711L
         return data.table_data.load();
 #else
-        std::shared_lock lock(mutex_);
+        std::shared_lock lock(data.mutex_);
         return data.table_data;
 #endif
     }
