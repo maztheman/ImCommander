@@ -34,6 +34,9 @@
 #include <unordered_map>
 #include <thread>
 
+#if !(__cpp_lib_atomic_shared_ptr >= 201711L)
+#include <shared_mutex>
+#endif
 
 namespace fs = std::filesystem;
 
@@ -94,7 +97,13 @@ namespace {
             current_path = to_path;
 
             auto updateCallback = [this](TableRowDataVectorPtr data, size_t newHash) {
+#if __cpp_lib_atomic_shared_ptr >= 201711L
                 table_data.store(data);
+#else
+                std::unique_lock lock(mutex_);
+                table_data = data;
+#endif
+
                 dir_dirty = true;
                 dir_hash = newHash;
             };
@@ -156,7 +165,12 @@ namespace {
 
         fs::path current_path;
         std::array<char, 1024> dir = {0};
+#if __cpp_lib_atomic_shared_ptr >= 201711L
         std::atomic<TableRowDataVectorPtr> table_data;
+#else
+        mutable std::shared_mutex mutex_;
+        TableRowDataVectorPtr table_data;
+#endif
         std::set<size_t> selection;
         //quick access to selection data, could have literally all files in directory here..is that good?
         //maybe we just pull dynamically ?
@@ -412,6 +426,16 @@ namespace {
         return row->name;
     }
 
+    auto get_table_data(pane_data_t& data)
+    {
+#if __cpp_lib_atomic_shared_ptr >= 201711L
+        return data.table_data.load();
+#else
+        std::shared_lock lock(mutex_);
+        return data.table_data;
+#endif
+    }
+
     void draw_pane(pane_data_t& data)
     {
         bool dir_dirty = false;
@@ -431,7 +455,7 @@ namespace {
             ImGui::TableSetupColumn("rwx", ImGuiTableColumnFlags_WidthFixed, 80.0f, sortable_columns::Permissions);
             ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
             ImGui::TableHeadersRow();
-            if (auto rows = data.table_data.load(); rows) {
+            if (auto rows = get_table_data(data); rows) {
                 if (ImGuiTableSortSpecs* sort_specs = ImGui::TableGetSortSpecs(); sort_specs->SpecsDirty || dir_dirty) {
                     sort_data_by(sort_specs, *rows);
                     sort_specs->SpecsDirty = false;
